@@ -1,6 +1,6 @@
 package com.uped.veterinaria.modelo;
 
-public class Veterinario {
+public class Veterinario implements Notificable {
 
     private String nombre;
     private String numeroJvm;
@@ -94,6 +94,11 @@ public class Veterinario {
         this.aniosExperiencia = aniosExperiencia;
     }
 
+    @Override
+    public void enviarNotificacion(String mensaje) {
+        System.out.println("Notificación para el veterinario " + nombre + ": " + mensaje);
+    }
+
     // Método toString
     @Override
     public String toString() {
@@ -103,4 +108,3 @@ public class Veterinario {
                 + " | Exp: " + aniosExperiencia + " años]";
     }
 }
-

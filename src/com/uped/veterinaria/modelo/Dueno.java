@@ -1,6 +1,6 @@
 package com.uped.veterinaria.modelo;
 
-public class Dueno {
+public class Dueno implements Notificable {
 
     private String nombre;
     private String dui;
@@ -77,6 +77,11 @@ public class Dueno {
         }
 
         this.direccion = direccion;
+    }
+
+    @Override
+    public void enviarNotificacion(String mensaje) {
+        System.out.println("Notificación para el dueño " + nombre + ": " + mensaje);
     }
 
     @Override
