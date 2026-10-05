@@ -1,59 +1,39 @@
-package com.uped.veterinaria.modelo;
-public abstract class Persona {
-    protected String nombre;
-    protected String dui;
-    protected String telefono;
-    protected String direccion;
+package com.veterinaria.modelo;
 
-    public Persona(String nombre,
-                   String dui,
-                   String telefono,
-                   String direccion) {
-        validarDatosBasicos(nombre, dui);
-        this.nombre = nombre.trim();
-        this.dui = dui.trim();
-        this.telefono = (telefono != null && !telefono.isBlank())
-                ? telefono.trim()
-                : "SIN TELEFONO";
-        this.direccion = (direccion != null && !direccion.isBlank())
-                ? direccion.trim()
-                : "SIN DIRECCION";
+/**
+ * Subclase Dueno que hereda de Persona (Relación "es un" / Is-A).
+ */
+public class Dueno extends Persona {
+    private String direccion;
+    private String nombreMascota;
+
+    public Dueno(String id, String nombre, String telefono, String email, String direccion, String nombreMascota) {
+        // Propagación de constructores hacia la superclase mediante super()
+        super(id, nombre, telefono, email);
+        this.direccion = direccion;
+        this.nombreMascota = nombreMascota;
     }
 
-    private void validarDatosBasicos(String nombre, String dui) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El nombre de la persona no puede estar vacío."
-            );
-        }
-        if (dui == null || dui.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El DUI de la persona no puede estar vacío."
-            );
-        }
-    }
-
-
-    public String getNombre() {
-        return nombre;
-    }
-    public String getDui() {
-        return dui;
-    }
-    public String getTelefono() {
-        return telefono;
-    }
     public String getDireccion() {
         return direccion;
     }
 
-    public String presentarse() {
-        return nombre + " (DUI: " + dui + ")";
+    public String getNombreMascota() {
+        return nombreMascota;
     }
 
-    public abstract String getRol();
-
-    public abstract String getDetalleCompleto();
+    @Override
+    public void mostrarFichaCompleta() {
+        System.out.println("==========================================");
+        System.out.println("FICHA DE PROPIETARIO / DUEÑO DE MASCOTA");
+        System.out.println("==========================================");
+        // Acceso directo a los atributos protected heredados (id, nombre, telefono, email)
+        System.out.println("ID: " + id);
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Teléfono: " + telefono);
+        System.out.println("Email: " + email);
+        System.out.println("Dirección: " + direccion);
+        System.out.println("Mascota asignada: " + nombreMascota);
+        System.out.println("------------------------------------------");
+    }
 }
-
-
