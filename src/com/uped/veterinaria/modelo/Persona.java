@@ -1,39 +1,44 @@
 package com.veterinaria.modelo;
 
 /**
- * Subclase Dueno que hereda de Persona (Relación "es un" / Is-A).
+ * Superclase abstracta Persona.
+ * Demuestra la reutilización de código y encapsulamiento con atributos protected.
  */
-public class Dueno extends Persona {
-    private String direccion;
-    private String nombreMascota;
+public abstract class Persona {
+    protected String id;
+    protected String nombre;
+    protected String telefono;
+    protected String email;
 
-    public Dueno(String id, String nombre, String telefono, String email, String direccion, String nombreMascota) {
-        // Propagación de constructores hacia la superclase mediante super()
-        super(id, nombre, telefono, email);
-        this.direccion = direccion;
-        this.nombreMascota = nombreMascota;
+    // Constructor base que será invocado por las subclases mediante super(...)
+    public Persona(String id, String nombre, String telefono, String email) {
+        this.id = id;
+        this.nombre = nombre;
+        this.telefono = telefono;
+        this.email = email;
     }
 
-    public String getDireccion() {
-        return direccion;
+    public String getId() {
+        return id;
     }
 
-    public String getNombreMascota() {
-        return nombreMascota;
+    public String getNombre() {
+        return nombre;
     }
 
-    @Override
-    public void mostrarFichaCompleta() {
-        System.out.println("==========================================");
-        System.out.println("FICHA DE PROPIETARIO / DUEÑO DE MASCOTA");
-        System.out.println("==========================================");
-        // Acceso directo a los atributos protected heredados (id, nombre, telefono, email)
-        System.out.println("ID: " + id);
-        System.out.println("Nombre: " + nombre);
-        System.out.println("Teléfono: " + telefono);
-        System.out.println("Email: " + email);
-        System.out.println("Dirección: " + direccion);
-        System.out.println("Mascota asignada: " + nombreMascota);
-        System.out.println("------------------------------------------");
+    public String getTelefono() {
+        return telefono;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
+    // Método que demuestra el comportamiento común
+    public void presentarse() {
+        System.out.println("Hola, soy " + nombre + " [ID: " + id + "]");
+    }
+
+    // Método abstracto para obligar la implementación específica en las subclases
+    public abstract void mostrarFichaCompleta();
 }
