@@ -1,110 +1,56 @@
-package com.uped.veterinaria.modelo;
+package com.veterinaria.modelo;
 
-public class Veterinario implements Notificable {
-
-    private String nombre;
-    private String numeroJvm;
+/**
+ * Subclase Veterinario que hereda de Persona (Relación "es un" / Is-A).
+ */
+public class Veterinario extends Persona {
+    private String numJuntaVET;
     private String especialidad;
-    private int aniosExperiencia;
+    private double salarioBase;
 
-    // Constructor
-    public Veterinario(String nombre, String numeroJvm, String especialidad, int aniosExperiencia) {
-
-        // Validación de campos de texto
-        String[] camposTexto = {nombre, numeroJvm, especialidad};
-
-        for (String campo : camposTexto) {
-            if (campo == null || campo.trim().isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Todos los campos de texto del veterinario son obligatorios."
-                );
-            }
-        }
-
-        // Validación de años de experiencia
-        if (aniosExperiencia < 0) {
-            throw new IllegalArgumentException(
-                    "Los años de experiencia no pueden ser negativos."
-            );
-        }
-
-        this.nombre = nombre;
-        this.numeroJvm = numeroJvm;
+    public Veterinario(String id, String nombre, String telefono, String email, String numJuntaVET, String especialidad, double salarioBase) {
+        // Propagación del constructor base mediante super(...)
+        super(id, nombre, telefono, email);
+        this.numJuntaVET = numJuntaVET;
         this.especialidad = especialidad;
-        this.aniosExperiencia = aniosExperiencia;
+        this.salarioBase = salarioBase;
     }
 
-    // Getter y Setter de nombre
-    public String getNombre() {
-        return nombre;
+    public String getNumJuntaVET() {
+        return numJuntaVET;
     }
 
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El nombre no puede estar vacío."
-            );
-        }
-
-        this.nombre = nombre;
-    }
-
-    // Getter y Setter de numeroJvm
-    public String getNumeroJvm() {
-        return numeroJvm;
-    }
-
-    public void setNumeroJvm(String numeroJvm) {
-        if (numeroJvm == null || numeroJvm.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El número JVM no puede estar vacío."
-            );
-        }
-
-        this.numeroJvm = numeroJvm;
-    }
-
-    // Getter y Setter de especialidad
     public String getEspecialidad() {
         return especialidad;
     }
 
-    public void setEspecialidad(String especialidad) {
-        if (especialidad == null || especialidad.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "La especialidad no puede estar vacía."
-            );
-        }
-
-        this.especialidad = especialidad;
+    public double getSalarioBase() {
+        return salarioBase;
     }
 
-    // Getter y Setter de años de experiencia
-    public int getAniosExperiencia() {
-        return aniosExperiencia;
-    }
-
-    public void setAniosExperiencia(int aniosExperiencia) {
-        if (aniosExperiencia < 0) {
-            throw new IllegalArgumentException(
-                    "Los años de experiencia no pueden ser negativos."
-            );
-        }
-
-        this.aniosExperiencia = aniosExperiencia;
+    public double calcularSalarioTotal(double bonoEmergencia) {
+        return salarioBase + bonoEmergencia;
     }
 
     @Override
-    public void enviarNotificacion(String mensaje) {
-        System.out.println("Notificación para el veterinario " + nombre + ": " + mensaje);
+    public void presentarse() {
+        // Reutilización y extensión del método de la superclase
+        super.presentarse();
+        System.out.println("Especialidad: " + especialidad + " | N° Junta Médica: " + numJuntaVET);
     }
 
-    // Método toString
     @Override
-    public String toString() {
-        return "Dr(a). " + nombre
-                + " [JVM: " + numeroJvm
-                + " | Especialidad: " + especialidad
-                + " | Exp: " + aniosExperiencia + " años]";
+    public void mostrarFichaCompleta() {
+        System.out.println("==========================================");
+        System.out.println("FICHA DE PERSONAL VETERINARIO");
+        System.out.println("==========================================");
+        // Reutilización directa de atributos protected heredados
+        System.out.println("ID Personal: " + id);
+        System.out.println("Dr(a).: " + nombre);
+        System.out.println("Especialidad: " + especialidad);
+        System.out.println("N° JSV: " + numJuntaVET);
+        System.out.println("Contacto: " + telefono + " | " + email);
+        System.out.println("Salario Base: $" + String.format("%.2f", salarioBase));
+        System.out.println("------------------------------------------");
     }
 }
