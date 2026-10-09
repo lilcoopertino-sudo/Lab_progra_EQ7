@@ -1,17 +1,20 @@
-package com.veterinaria.modelo;
+package com.uped.veterinaria.modelo;
 
-/**
- * Subclase Dueno que hereda de Persona (Relación "es un" / Is-A).
- */
-public class Dueno extends Persona {
+import com.uped.veterinaria.interfaces.Notificable;
+
+
+//  Subclase Dueno que hereda de Persona (Relación "es un" / Is-A)
+//  e implementa Notificable (Entregable de Nelson).
+
+public abstract class Dueno extends Persona implements Notificable {
     private String direccion;
     private String nombreMascota;
 
-    public Dueno(String id, String nombre, String telefono, String email, String direccion, String nombreMascota) {
+    public Dueno(String dui, String nombre, String telefono, String email, String direccion, String nombreMascota) {
         // Propagación de constructores hacia la superclase mediante super()
-        super(id, nombre, telefono, email);
-        this.direccion = direccion;
-        this.nombreMascota = nombreMascota;
+        super(dui, nombre, telefono, email);
+        this.direccion = (direccion != null && !direccion.isBlank()) ? direccion.trim() : "SIN-DIRECCION";
+        this.nombreMascota = (nombreMascota != null && !nombreMascota.isBlank()) ? nombreMascota.trim() : "SIN-MASCOTA";
     }
 
     public String getDireccion() {
@@ -22,18 +25,37 @@ public class Dueno extends Persona {
         return nombreMascota;
     }
 
+    // Implementación obligatoria de los métodos abstractos heredados de Persona
     @Override
+    public String getRol() {
+        return "Propietario / Dueño";
+    }
+
+    @Override
+    public String getDetalleCompleto() {
+        return "DUI: " + dui + " | Nombre: " + nombre + " | Tel: " + telefono +
+                " | Email: " + email + " | Dirección: " + direccion +
+                " | Mascota: " + nombreMascota;
+    }
+
+    // Método de la subclase
     public void mostrarFichaCompleta() {
         System.out.println("==========================================");
         System.out.println("FICHA DE PROPIETARIO / DUEÑO DE MASCOTA");
         System.out.println("==========================================");
-        // Acceso directo a los atributos protected heredados (id, nombre, telefono, email)
-        System.out.println("ID: " + id);
+        // Acceso directo a los atributos protected heredados (dui, nombre, telefono, email)
+        System.out.println("DUI: " + dui);
         System.out.println("Nombre: " + nombre);
         System.out.println("Teléfono: " + telefono);
         System.out.println("Email: " + email);
         System.out.println("Dirección: " + direccion);
         System.out.println("Mascota asignada: " + nombreMascota);
         System.out.println("------------------------------------------");
+    }
+
+    // Implementación obligatoria de la interfaz Notificable
+    @Override
+    public void enviarNotificacion(String mensaje) {
+        System.out.println("📩 [NOTIFICACIÓN A DUEÑO] " + nombre + " (" + telefono + "): " + mensaje);
     }
 }

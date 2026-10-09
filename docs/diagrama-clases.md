@@ -4,52 +4,70 @@
 ```mermaid
 classDiagram 
     %% Interfaz propia (Nelson) 
-    class Facturable {
+    class Notificable {
         <<interface>>
-        +calcularMontoTotal() double 
-        +generarComprobante() String
+        +enviarNotificacion(mensaje: String) void
     }
 
     %% Clase Abstracta Base (Nathaly / Jessie) 
     class Persona {
         <<abstract>>
-        #String nombre 
-        #String dui #String telefono 
-        #String direccion 
-        +getNombre() String 
-        +setNombre(String) void 
-        +getDui() String 
-        +getTelefono() String 
-        +getDireccion() String
+        #String dui
+        #String nombre
+        #String telefono
+        #String email
+        +Persona(dui: String, nombre: String, telefono: String, email: String)
+        +getDui() String
+        +getNombre() String
+        +getTelefono() String
+        +getEmail() String
+        +presentarse() String
+        +getRol()* String
+        +getDetalleCompleto()* String
+        +mostrarFichaCompleta()* void
     }
 
     %% Subclases de Persona (Herencia - Jessie) 
-    class Dueno { 
-        +Dueno(String, String, String, String) 
-        +toString() String
+    class Dueno {
+        -String direccion
+        -String nombreMascota
+        +Dueno(dui: String, nombre: String, telefono: String, email: String, direccion: String, nombreMascota: String)
+        +getDireccion() String
+        +getNombreMascota() String
+        +getRol() String
+        +getDetalleCompleto() String
+        +mostrarFichaCompleta() void
+        +enviarNotificacion(mensaje: String) void
     }
 
-    class Veterinario { 
-        -String idVeterinario 
-        -String especialidad 
-        -double salario 
-        +Veterinario(String, String, String, double) 
-        +getIdVeterinario() String 
-        +getEspecialidad() String 
-        +toString() String
+    class Veterinario {
+        -String numJuntaVET
+        -String especialidad
+        -double salarioBase
+        +Veterinario(dui: String, nombre: String, telefono: String, email: String, numJuntaVET: String, especialidad: String, salarioBase: double)
+        +getNumJuntaVET() String
+        +getEspecialidad() String
+        +getSalarioBase() double
+        +calcularSalarioTotal(bonoEmergencia: double) double
+        +getRol() String
+        +getDetalleCompleto() String
+        +presentarse() String
+        +mostrarFichaCompleta() void
+        +enviarNotificacion(mensaje: String) void
     }
 
     %% Entidades del Dominio Veterinario 
-    class Mascota { 
-        -String nombre 
-        -String especie 
-        -String raza 
-        -int edad 
-        -double peso 
-        -Dueno dueno 
-        +Mascota(String, String, String, int, double, Dueno) 
-        +esPacienteGeriatrico() boolean 
-        +toString() String
+    class Mascota {
+        -String codigo
+        -String nombre
+        -String especie
+        -int edad
+        +Mascota(codigo: String, nombre: String, especie: String, edad: int)
+        +getCodigo() String
+        +getNombre() String
+        +getEspecie() String
+        +getEdad() int
+        +getDetalleMascota() String
     }
 
     class Tratamiento { 
@@ -65,18 +83,22 @@ classDiagram
         +toString() String
     }
 
-    class CitaMedica { 
-        -String idCita 
-        -String fecha 
-        -String hora 
-        -String motivo 
-        -Mascota mascota 
-        -Veterinario veterinario 
-        -Tratamiento tratamiento 
-        +CitaMedica(String, String, String, String, Mascota, Veterinario, Tratamiento) 
-        +calcularMontoTotal() double 
-        +generarComprobante() String 
-        +toString() String
+    class CitaMedica {
+        -String idCita
+        -Mascota mascota
+        -Veterinario veterinario
+        -Dueno dueno
+        -double costoBase
+        +CitaMedica(idCita: String, mascota: Mascota, veterinario: Veterinario, dueno: Dueno, costoBase: double)
+        +calcularCostoTotal() double
+        +calcularCostoTotal(porcentajeDescuento: double) double
+        +calcularCostoTotal(porcentajeDescuento: double, esEmergencia: boolean) double
+        +getResumenCita() String
+        +getIdCita() String
+        +getMascota() Mascota
+        +getVeterinario() Veterinario
+        +getDueno() Dueno
+        +getCostoBase() double
     }
 
     %% Relaciones de Herencia (extends) 
@@ -84,14 +106,14 @@ classDiagram
     Persona <|-- Veterinario : Hereda (extends)
 
     %% Relaciones de Implementacion (implements) 
-    Facturable <|.. Tratamiento : Implementa 
-    Facturable <|.. CitaMedica : Implementa
+    Notificable <|.. Tratamiento : Implementa 
+    Notificable <|.. CitaMedica : Implementa
 
     %% Relaciones de Asociacion 
-    Mascota "1" --> "1" Dueno : Pertenece a 
+    Dueno"1" --> "1" Mascota : Es propietario de
     CitaMedica "1" --> "1" Mascota : Asignada a 
     CitaMedica "1" --> "1" Veterinario : Atendida por 
-    CitaMedica "1" --> "1" Tratamiento : Incluye
+    CitaMedica "1" --> "1" Dueno: Pertenece a
     
     
     
