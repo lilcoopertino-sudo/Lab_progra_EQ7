@@ -1,110 +1,88 @@
 package com.uped.veterinaria.modelo;
 
-public class Veterinario implements Notificable {
+// Importación obligatoria de la interfaz
+import com.uped.veterinaria.interfaces.Notificable;
 
-    private String nombre;
-    private String numeroJvm;
+/**
+ * Subclase Veterinario que hereda de Persona e implementa Notificable.
+ */
+public class Veterinario extends Persona implements Notificable {
+    private String numJuntaVET;
     private String especialidad;
-    private int aniosExperiencia;
+    private double salarioBase;
 
-    // Constructor
-    public Veterinario(String nombre, String numeroJvm, String especialidad, int aniosExperiencia) {
-
-        // Validación de campos de texto
-        String[] camposTexto = {nombre, numeroJvm, especialidad};
-
-        for (String campo : camposTexto) {
-            if (campo == null || campo.trim().isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Todos los campos de texto del veterinario son obligatorios."
-                );
-            }
-        }
-
-        // Validación de años de experiencia
-        if (aniosExperiencia < 0) {
-            throw new IllegalArgumentException(
-                    "Los años de experiencia no pueden ser negativos."
-            );
-        }
-
-        this.nombre = nombre;
-        this.numeroJvm = numeroJvm;
-        this.especialidad = especialidad;
-        this.aniosExperiencia = aniosExperiencia;
+    public Veterinario(String dui, String nombre, String telefono, String email,
+                       String numJuntaVET, String especialidad, double salarioBase) {
+        // Propagación hacia el constructor de Persona
+        super(dui, nombre, telefono, email);
+        this.numJuntaVET = (numJuntaVET != null && !numJuntaVET.isBlank()) ? numJuntaVET.trim() : "SIN-JVPM";
+        this.especialidad = (especialidad != null && !especialidad.isBlank()) ? especialidad.trim() : "GENERAL";
+        this.salarioBase = (salarioBase >= 0) ? salarioBase : 0.0;
     }
 
-    // Getter y Setter de nombre
-    public String getNombre() {
-        return nombre;
+    public String getNumJuntaVET() {
+        return numJuntaVET;
     }
 
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El nombre no puede estar vacío."
-            );
-        }
-
-        this.nombre = nombre;
-    }
-
-    // Getter y Setter de numeroJvm
-    public String getNumeroJvm() {
-        return numeroJvm;
-    }
-
-    public void setNumeroJvm(String numeroJvm) {
-        if (numeroJvm == null || numeroJvm.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El número JVM no puede estar vacío."
-            );
-        }
-
-        this.numeroJvm = numeroJvm;
-    }
-
-    // Getter y Setter de especialidad
     public String getEspecialidad() {
         return especialidad;
     }
 
-    public void setEspecialidad(String especialidad) {
-        if (especialidad == null || especialidad.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "La especialidad no puede estar vacía."
-            );
-        }
-
-        this.especialidad = especialidad;
+    public double getSalarioBase() {
+        return salarioBase;
     }
 
-    // Getter y Setter de años de experiencia
-    public int getAniosExperiencia() {
-        return aniosExperiencia;
+    public double calcularSalarioTotal(double bonoEmergencia) {
+        return salarioBase + ((bonoEmergencia > 0) ? bonoEmergencia : 0.0);
     }
 
-    public void setAniosExperiencia(int aniosExperiencia) {
-        if (aniosExperiencia < 0) {
-            throw new IllegalArgumentException(
-                    "Los años de experiencia no pueden ser negativos."
-            );
-        }
+    // ======================================================================
+    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE PERSONA
+    // ======================================================================
 
-        this.aniosExperiencia = aniosExperiencia;
+    @Override
+    public String getRol() {
+        return "Personal Veterinario";
     }
+
+    @Override
+    public String getDetalleCompleto() {
+        return "DUI: " + dui + " | Dr(a). " + nombre + " | JVPM: " + numJuntaVET +
+                " | Especialidad: " + especialidad + " | Tel: " + telefono +
+                " | Email: " + email + " | Salario Base: $" + String.format("%.2f", salarioBase);
+    }
+
+    @Override
+    public void mostrarFichaCompleta() {
+        System.out.println("==========================================");
+        System.out.println("FICHA DE PERSONAL VETERINARIO");
+        System.out.println("==========================================");
+        System.out.println("DUI Personal: " + dui);
+        System.out.println("Dr(a).: " + nombre);
+        System.out.println("Especialidad: " + especialidad);
+        System.out.println("N° JSV: " + numJuntaVET);
+        System.out.println("Contacto: " + telefono + " | " + email);
+        System.out.println("Salario Base: $" + String.format("%.2f", salarioBase));
+        System.out.println("------------------------------------------");
+    }
+
+    // Extensión del método de la superclase
+    @Override
+    public String presentarse() {
+        return super.presentarse() + " | Especialidad: " + especialidad + " | N° JSV: " + numJuntaVET;
+    }
+
+    @Override
+    public void mostrarFichacompleta() {
+
+    }
+
+    // ======================================================================
+    // IMPLEMENTACIÓN DE LA INTERFAZ NOTIFICABLE
+    // ======================================================================
 
     @Override
     public void enviarNotificacion(String mensaje) {
-        System.out.println("Notificación para el veterinario " + nombre + ": " + mensaje);
-    }
-
-    // Método toString
-    @Override
-    public String toString() {
-        return "Dr(a). " + nombre
-                + " [JVM: " + numeroJvm
-                + " | Especialidad: " + especialidad
-                + " | Exp: " + aniosExperiencia + " años]";
+        System.out.println("📲 [SISTEMA MEDICO] Dr(a). " + nombre + " (JVPM: " + numJuntaVET + "): " + mensaje);
     }
 }

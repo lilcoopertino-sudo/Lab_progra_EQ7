@@ -1,180 +1,77 @@
 package com.uped.veterinaria.modelo;
 
-public class CitaMedica {
+//  Clase de dominio CitaMedica que gestiona la atención realizada por un médico
+//  veterinario a un paciente, aplicando sobrecarga de métodos para el cálculo de costos.
 
-    private String codigoCita;
-    private String fecha;
+public class CitaMedica {
+    private String idCita;
     private Mascota mascota;
     private Veterinario veterinario;
-    private String motivo;
-    private String estado;
-    private String diagnostico;
+    private Dueno dueno;
+    private double costoBase;
 
-    // Constructor
-    public CitaMedica(
-            String codigoCita,
-            String fecha,
-            Mascota mascota,
-            Veterinario veterinario,
-            String motivo) {
-
-        // Validar campos de texto
-        String[] camposTexto = {
-                codigoCita,
-                fecha,
-                motivo
-        };
-
-        for (String texto : camposTexto) {
-            if (texto == null || texto.trim().isEmpty()) {
-                throw new IllegalArgumentException(
-                        "Los datos de texto de la cita son obligatorios."
-                );
-            }
+    public CitaMedica(String idCita, Mascota mascota, Veterinario veterinario, Dueno dueno, double costoBase) {
+        if (costoBase < 0) {
+            throw new IllegalArgumentException("El costo base no puede ser negativo.");
         }
-
-        // Validar objetos requeridos
-        Object[] objetosRequeridos = {
-                mascota,
-                veterinario
-        };
-
-        for (Object obj : objetosRequeridos) {
-            if (obj == null) {
-                throw new IllegalArgumentException(
-                        "La cita debe contar con una mascota y un veterinario válidos."
-                );
-            }
-        }
-
-        // Asignar valores
-        this.codigoCita = codigoCita;
-        this.fecha = fecha;
+        this.idCita = (idCita != null && !idCita.isBlank()) ? idCita.trim() : "CITA-000";
         this.mascota = mascota;
         this.veterinario = veterinario;
-        this.motivo = motivo;
-
-        // Valores iniciales
-        this.estado = "PROGRAMADA";
-        this.diagnostico = "Pendiente de atención";
+        this.dueno = dueno;
+        this.costoBase = costoBase;
     }
 
-    // Método de negocio principal
-    public void completarCita(String diagnostico) {
+    // ======================================================================
+    // MÉTODOS SOBRECARGADOS (Overloading)
+    // ======================================================================
 
-        if (diagnostico == null || diagnostico.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El diagnóstico no puede estar vacío al completar la cita."
-            );
-        }
-
-        this.diagnostico = diagnostico;
-        this.estado = "COMPLETADA";
+    // Sobrecarga 1: Cobro normal
+    public double calcularCostoTotal() {
+        return costoBase;
     }
 
-    // Getter y Setter de codigoCita
-    public String getCodigoCita() {
-        return codigoCita;
+    // Sobrecarga 2: Cobro con porcentaje de descuento
+    public double calcularCostoTotal(double porcentajeDescuento) {
+        double descuento = (porcentajeDescuento > 0) ? porcentajeDescuento : 0.0;
+        return costoBase - (costoBase * (descuento / 100.0));
     }
 
-    public void setCodigoCita(String codigoCita) {
-        if (codigoCita == null || codigoCita.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El código de la cita no puede estar vacío."
-            );
-        }
-
-        this.codigoCita = codigoCita;
+    // Sobrecarga 3: Cobro de emergencia (con recargo de $15.00)
+    public double calcularCostoTotal(double porcentajeDescuento, boolean esEmergencia) {
+        double recargo = esEmergencia ? 15.00 : 0.0;
+        return calcularCostoTotal(porcentajeDescuento) + recargo;
     }
 
-    // Getter y Setter de fecha
-    public String getFecha() {
-        return fecha;
+    // Método para resumen completo de la cita
+    public String getResumenCita() {
+        String nombreMascota = (mascota != null) ? mascota.getNombre() : "SIN-MASCOTA";
+        String nombreVet = (veterinario != null) ? veterinario.getNombre() : "SIN-VET";
+        String nombreDueno = (dueno != null) ? dueno.getNombre() : "SIN-DUEÑO";
+
+        return "Cita " + idCita + " | Paciente: " + nombreMascota +
+                " | Atendido por: Dr(a). " + nombreVet +
+                " | Dueño: " + nombreDueno +
+                " | Costo Base: $" + String.format("%.2f", costoBase);
     }
 
-    public void setFecha(String fecha) {
-        if (fecha == null || fecha.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "La fecha no puede estar vacía."
-            );
-        }
-
-        this.fecha = fecha;
+    // Getters
+    public String getIdCita() {
+        return idCita;
     }
 
-    // Getter y Setter de mascota
     public Mascota getMascota() {
         return mascota;
     }
 
-    public void setMascota(Mascota mascota) {
-        if (mascota == null) {
-            throw new IllegalArgumentException(
-                    "La mascota no puede ser nula."
-            );
-        }
-
-        this.mascota = mascota;
-    }
-
-    // Getter y Setter de veterinario
     public Veterinario getVeterinario() {
         return veterinario;
     }
 
-    public void setVeterinario(Veterinario veterinario) {
-        if (veterinario == null) {
-            throw new IllegalArgumentException(
-                    "El veterinario no puede ser nulo."
-            );
-        }
-
-        this.veterinario = veterinario;
+    public Dueno getDueno() {
+        return dueno;
     }
 
-    // Getter y Setter de motivo
-    public String getMotivo() {
-        return motivo;
-    }
-
-    public void setMotivo(String motivo) {
-        if (motivo == null || motivo.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El motivo no puede estar vacío."
-            );
-        }
-
-        this.motivo = motivo;
-    }
-
-    // Getter de estado
-    public String getEstado() {
-        return estado;
-    }
-
-    // Getter y Setter de diagnostico
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        if (diagnostico == null || diagnostico.trim().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El diagnóstico no puede estar vacío."
-            );
-        }
-
-        this.diagnostico = diagnostico;
-    }
-
-    // Método toString
-    @Override
-    public String toString() {
-        return "Cita [" + codigoCita + "] - Fecha: " + fecha + "\n"
-                + " Paciente: " + mascota.getNombre()
-                + " | Atiende: " + veterinario.getNombre() + "\n"
-                + " Motivo: " + motivo
-                + " | Estado: " + estado + "\n"
-                + " Diagnóstico: " + diagnostico;
+    public double getCostoBase() {
+        return costoBase;
     }
 }

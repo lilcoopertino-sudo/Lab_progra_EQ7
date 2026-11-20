@@ -1,96 +1,61 @@
 package com.uped.veterinaria.modelo;
 
-public class Dueno implements Notificable {
+import com.uped.veterinaria.interfaces.Notificable;
 
-    private String nombre;
-    private String dui;
-    private String telefono;
+
+//  Subclase Dueno que hereda de Persona (Relación "es un" / Is-A)
+//  e implementa Notificable (Entregable de Nelson).
+
+public abstract class Dueno extends Persona implements Notificable {
     private String direccion;
+    private String nombreMascota;
 
-    public Dueno(String nombre, String dui, String telefono, String direccion) {
-
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-
-        if (dui == null || dui.trim().isEmpty()) {
-            throw new IllegalArgumentException("El DUI no puede estar vacío.");
-        }
-
-        if (telefono == null || telefono.trim().isEmpty()) {
-            throw new IllegalArgumentException("El teléfono no puede estar vacío.");
-        }
-
-        if (direccion == null || direccion.trim().isEmpty()) {
-            throw new IllegalArgumentException("La dirección no puede estar vacía.");
-        }
-
-        this.nombre = nombre;
-        this.dui = dui;
-        this.telefono = telefono;
-        this.direccion = direccion;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.trim().isEmpty()) {
-            throw new IllegalArgumentException("El nombre no puede estar vacío.");
-        }
-
-        this.nombre = nombre;
-    }
-
-    public String getDui() {
-        return dui;
-    }
-
-    public void setDui(String dui) {
-        if (dui == null || dui.trim().isEmpty()) {
-            throw new IllegalArgumentException("El DUI no puede estar vacío.");
-        }
-
-        this.dui = dui;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        if (telefono == null || telefono.trim().isEmpty()) {
-            throw new IllegalArgumentException("El teléfono no puede estar vacío.");
-        }
-
-        this.telefono = telefono;
+    public Dueno(String dui, String nombre, String telefono, String email, String direccion, String nombreMascota) {
+        // Propagación de constructores hacia la superclase mediante super()
+        super(dui, nombre, telefono, email);
+        this.direccion = (direccion != null && !direccion.isBlank()) ? direccion.trim() : "SIN-DIRECCION";
+        this.nombreMascota = (nombreMascota != null && !nombreMascota.isBlank()) ? nombreMascota.trim() : "SIN-MASCOTA";
     }
 
     public String getDireccion() {
         return direccion;
     }
 
-    public void setDireccion(String direccion) {
-        if (direccion == null || direccion.trim().isEmpty()) {
-            throw new IllegalArgumentException("La dirección no puede estar vacía.");
-        }
-
-        this.direccion = direccion;
+    public String getNombreMascota() {
+        return nombreMascota;
     }
 
+    // Implementación obligatoria de los métodos abstractos heredados de Persona
+    @Override
+    public String getRol() {
+        return "Propietario / Dueño";
+    }
+
+    @Override
+    public String getDetalleCompleto() {
+        return "DUI: " + dui + " | Nombre: " + nombre + " | Tel: " + telefono +
+                " | Email: " + email + " | Dirección: " + direccion +
+                " | Mascota: " + nombreMascota;
+    }
+
+    // Método de la subclase
+    public void mostrarFichaCompleta() {
+        System.out.println("==========================================");
+        System.out.println("FICHA DE PROPIETARIO / DUEÑO DE MASCOTA");
+        System.out.println("==========================================");
+        // Acceso directo a los atributos protected heredados (dui, nombre, telefono, email)
+        System.out.println("DUI: " + dui);
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Teléfono: " + telefono);
+        System.out.println("Email: " + email);
+        System.out.println("Dirección: " + direccion);
+        System.out.println("Mascota asignada: " + nombreMascota);
+        System.out.println("------------------------------------------");
+    }
+
+    // Implementación obligatoria de la interfaz Notificable
     @Override
     public void enviarNotificacion(String mensaje) {
-        System.out.println("Notificación para el dueño " + nombre + ": " + mensaje);
-    }
-
-    @Override
-    public String toString() {
-        return "Dueno{" +
-                "nombre='" + nombre + '\'' +
-                ", dui='" + dui + '\'' +
-                ", telefono='" + telefono + '\'' +
-                ", direccion='" + direccion + '\'' +
-                '}';
+        System.out.println("📩 [NOTIFICACIÓN A DUEÑO] " + nombre + " (" + telefono + "): " + mensaje);
     }
 }

@@ -1,59 +1,44 @@
 package com.uped.veterinaria.modelo;
+
 public abstract class Persona {
-    protected String nombre;
     protected String dui;
+    protected String nombre;
     protected String telefono;
-    protected String direccion;
+    protected String email;
 
-    public Persona(String nombre,
-                   String dui,
-                   String telefono,
-                   String direccion) {
-        validarDatosBasicos(nombre, dui);
-        this.nombre = nombre.trim();
-        this.dui = dui.trim();
-        this.telefono = (telefono != null && !telefono.isBlank())
-                ? telefono.trim()
-                : "SIN TELEFONO";
-        this.direccion = (direccion != null && !direccion.isBlank())
-                ? direccion.trim()
-                : "SIN DIRECCION";
+    // Constructor base invocado por las subclases mediante super(...)
+    public Persona(String dui, String nombre, String telefono, String email) {
+        this.dui = (dui != null && !dui.isBlank()) ? dui.trim() : "SIN-DUI";
+        this.nombre = (nombre != null && !nombre.isBlank()) ? nombre.trim() : "SIN-NOMBRE";
+        this.telefono = (telefono != null && !telefono.isBlank()) ? telefono.trim() : "SIN-TEL";
+        this.email = (email != null && !email.isBlank()) ? email.trim() : "SIN-EMAIL";
     }
 
-    private void validarDatosBasicos(String nombre, String dui) {
-        if (nombre == null || nombre.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El nombre de la persona no puede estar vacío."
-            );
-        }
-        if (dui == null || dui.isBlank()) {
-            throw new IllegalArgumentException(
-                    "El DUI de la persona no puede estar vacío."
-            );
-        }
+    public String getDui() {
+        return dui;
     }
-
 
     public String getNombre() {
         return nombre;
     }
-    public String getDui() {
-        return dui;
-    }
+
     public String getTelefono() {
         return telefono;
     }
-    public String getDireccion() {
-        return direccion;
+
+    public String getEmail() {
+        return email;
     }
 
+    // Método concreto común
     public String presentarse() {
         return nombre + " (DUI: " + dui + ")";
     }
 
+    // Métodos abstractos obligatorios
+    public abstract void mostrarFichaCompleta();
     public abstract String getRol();
-
     public abstract String getDetalleCompleto();
+
+    public abstract void mostrarFichacompleta();
 }
-
-
