@@ -1,88 +1,58 @@
 package com.uped.veterinaria.modelo;
 
-// Importación obligatoria de la interfaz
-import com.uped.veterinaria.interfaces.Notificable;
-
+import com.uped.veterinaria.excepciones.DatoInvalidoException;
 /**
- * Subclase Veterinario que hereda de Persona e implementa Notificable.
- */
-public class Veterinario extends Persona implements Notificable {
+ \* Subclase Veterinario con validaciones de Junta VET, especialidad, salario y control de cupos.
+ \*/
+public class Veterinario extends Persona {
     private String numJuntaVET;
     private String especialidad;
     private double salarioBase;
+    private int citasAsignadasHoy;
 
     public Veterinario(String dui, String nombre, String telefono, String email,
                        String numJuntaVET, String especialidad, double salarioBase) {
-        // Propagación hacia el constructor de Persona
         super(dui, nombre, telefono, email);
-        this.numJuntaVET = (numJuntaVET != null && !numJuntaVET.isBlank()) ? numJuntaVET.trim() : "SIN-JVPM";
-        this.especialidad = (especialidad != null && !especialidad.isBlank()) ? especialidad.trim() : "GENERAL";
-        this.salarioBase = (salarioBase >= 0) ? salarioBase : 0.0;
+        setNumJuntaVET(numJuntaVET);
+        setEspecialidad(especialidad);
+        setSalarioBase(salarioBase);
+        this.citasAsignadasHoy = 0; 
     }
+    public String getNumJuntaVET() { return numJuntaVET; }
+    public void setNumJuntaVET(String numJuntaVET) {
+        if (numJuntaVET == null || numJuntaVET.isBlank() || !numJuntaVET.toUpperCase().startsWith("JV-")) {
+            throw new DatoInvalidoException("El número de Junta VET debe iniciar con el prefijo 'JV-'", "NumJuntaVET"); 
+        }
+        this.numJuntaVET = numJuntaVET.trim().toUpperCase(); 
+}
 
-    public String getNumJuntaVET() {
-        return numJuntaVET;
+public String getEspecialidad() { return especialidad; }
+public void setEspecialidad(String especialidad) {
+    if (especialidad == null || especialidad.isBlank()) {
+        throw new DatoInvalidoException("La especialidad del veterinario no puede estar vacía", "Especialidad"); 
     }
+    this.especialidad = especialidad.trim();
+}
+    public double getSalarioBase() { return salarioBase; } 
+    public void setSalarioBase(double salarioBase) {
+        if (salarioBase &lt; 365.00) { 
+            throw new DatoInvalidoException("El salario base no puede ser inferior al salario mínimo ($365.00)", "SalarioBase"); 
+        }
+        this.salarioBase = salarioBase; 
+}
 
-    public String getEspecialidad() {
-        return especialidad;
-    }
+public int getCitasAsignadasHoy() { return citasAsignadasHoy; }
 
-    public double getSalarioBase() {
-        return salarioBase;
-    }
+public void incrementarCitas() { 
+    this.citasAsignadasHoy++; 
+}
 
-    public double calcularSalarioTotal(double bonoEmergencia) {
-        return salarioBase + ((bonoEmergencia > 0) ? bonoEmergencia : 0.0);
-    }
+public void reiniciarCitasDiarias() { 
+    this.citasAsignadasHoy = 0; 
+}
 
-    // ======================================================================
-    // IMPLEMENTACIÓN DE MÉTODOS ABSTRACTOS DE PERSONA
-    // ======================================================================
-
-    @Override
-    public String getRol() {
-        return "Personal Veterinario";
-    }
-
-    @Override
-    public String getDetalleCompleto() {
-        return "DUI: " + dui + " | Dr(a). " + nombre + " | JVPM: " + numJuntaVET +
-                " | Especialidad: " + especialidad + " | Tel: " + telefono +
-                " | Email: " + email + " | Salario Base: $" + String.format("%.2f", salarioBase);
-    }
-
-    @Override
-    public void mostrarFichaCompleta() {
-        System.out.println("==========================================");
-        System.out.println("FICHA DE PERSONAL VETERINARIO");
-        System.out.println("==========================================");
-        System.out.println("DUI Personal: " + dui);
-        System.out.println("Dr(a).: " + nombre);
-        System.out.println("Especialidad: " + especialidad);
-        System.out.println("N° JSV: " + numJuntaVET);
-        System.out.println("Contacto: " + telefono + " | " + email);
-        System.out.println("Salario Base: $" + String.format("%.2f", salarioBase));
-        System.out.println("------------------------------------------");
-    }
-
-    // Extensión del método de la superclase
-    @Override
-    public String presentarse() {
-        return super.presentarse() + " | Especialidad: " + especialidad + " | N° JSV: " + numJuntaVET;
-    }
-
-    @Override
-    public void mostrarFichacompleta() {
-
-    }
-
-    // ======================================================================
-    // IMPLEMENTACIÓN DE LA INTERFAZ NOTIFICABLE
-    // ======================================================================
-
-    @Override
-    public void enviarNotificacion(String mensaje) {
-        System.out.println("📲 [SISTEMA MEDICO] Dr(a). " + nombre + " (JVPM: " + numJuntaVET + "): " + mensaje);
-    }
+@Override 
+    public String getRol() { 
+        return "Personal Veterinario (Junta: " + numJuntaVET + ")"; 
+    } 
 }
