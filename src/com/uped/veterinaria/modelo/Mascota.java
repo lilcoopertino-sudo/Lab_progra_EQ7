@@ -10,13 +10,22 @@ public class Mascota {
     private int edad;
 
     public Mascota(String codigo, String nombre, String especie, int edad) {
+        if (codigo == null || codigo.isBlank()) {
+            throw new IllegalArgumentException("El código de la mascota no puede estar vacío.");
+        }
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre de la mascota no puede estar vacío.");
         }
-        this.codigo = (codigo != null && !codigo.isBlank()) ? codigo.trim() : "M-000";
+        if (especie == null || especie.isBlank()) {
+            throw new IllegalArgumentException("La especie de la mascota no puede estar vacía.");
+        }
+        if (edad < 0) {
+            throw new IllegalArgumentException("La edad de la mascota no puede ser negativa.");
+        }
+        this.codigo = codigo.trim();
         this.nombre = nombre.trim();
-        this.especie = (especie != null && !especie.isBlank()) ? especie.trim() : "Desconocida";
-        this.edad = Math.max(0, edad);
+        this.especie = especie.trim();
+        this.edad = edad;
     }
 
     public String getDetalleMascota() {

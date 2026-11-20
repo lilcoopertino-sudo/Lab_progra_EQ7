@@ -13,8 +13,16 @@ public abstract class Dueno extends Persona implements Notificable {
     public Dueno(String dui, String nombre, String telefono, String email, String direccion, String nombreMascota) {
         // Propagación de constructores hacia la superclase mediante super()
         super(dui, nombre, telefono, email);
-        this.direccion = (direccion != null && !direccion.isBlank()) ? direccion.trim() : "SIN-DIRECCION";
-        this.nombreMascota = (nombreMascota != null && !nombreMascota.isBlank()) ? nombreMascota.trim() : "SIN-MASCOTA";
+        
+        if (direccion == null || direccion.isBlank()) {
+            throw new IllegalArgumentException("La dirección del dueño no puede estar vacía.");
+        }
+        if (nombreMascota == null || nombreMascota.isBlank()) {
+            throw new IllegalArgumentException("El nombre de la mascota asignada no puede estar vacío.");
+        }
+        
+        this.direccion = direccion.trim();
+        this.nombreMascota = nombreMascota.trim();
     }
 
     public String getDireccion() {
